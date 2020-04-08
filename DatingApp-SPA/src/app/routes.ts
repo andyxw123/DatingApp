@@ -6,7 +6,7 @@ import { ListsComponent } from './lists/lists.component';
 import { AuthGuard } from './_guards/auth.guard';
 
 export const appRoutes: Routes = [
-  { path: 'home', component: HomeComponent },
+  { path: '', component: HomeComponent },
   {
     path: '',
     runGuardsAndResolvers: 'always',

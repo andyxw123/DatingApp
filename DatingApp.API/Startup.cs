@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,10 +35,21 @@ namespace DatingApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers();
             services.AddCors();
+            services.AddAutoMapper(this.GetType().Assembly);
+
+            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Use Newtonsoft (package: Microsoft.AspNetCore.Mvc.NewtonsoftJson) rather than System.Text.Json
+            services.AddControllers().AddNewtonsoftJson(option => {
+                option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            
+            //Data Repositories
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
+
+            //Enforce Jwt bearer token authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -57,10 +69,12 @@ namespace DatingApp.API
         {
             if (env.IsDevelopment())
             {
+                //Developer friendly exception message formatting (inc stack trace etc)
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                //User friendly exception message formatting
                 app.UseExceptionHandler(builder => {
                     builder.Run(async httpContext => {
                         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

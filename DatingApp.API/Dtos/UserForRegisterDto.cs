@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DatingApp.API.Dtos
 {
-    public class UserForRegisterDto
+    public class UserForRegisterDto : UserBaseDto
     {
         [Required]
-        public string Username { get; set; }
+        public new string Username { get; set; }
 
         [Required]
         [StringLength(8, MinimumLength = 4, ErrorMessage = "{0} must be between {2} and {1} characters in length")]
-        public string Password { get; set; }
+        public new string Password { get; set; }
     }
 }
