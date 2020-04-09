@@ -36,8 +36,8 @@ namespace DatingApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddAutoMapper(this.GetType().Assembly);
 
+            services.AddAutoMapper(this.GetType().Assembly);
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // Use Newtonsoft (package: Microsoft.AspNetCore.Mvc.NewtonsoftJson) rather than System.Text.Json
