@@ -11,8 +11,8 @@ export class MemberListComponent implements OnInit {
   users: User[];
 
   constructor(private route: ActivatedRoute) {
-    this.route.data.subscribe(data => {
-      this.users = data['users'];  // Must match the resolver field name in routes.ts
+    this.route.data.subscribe(r => {
+      this.users = r.data;  // Must match the resolver field name in routes.ts
     });
   }
 

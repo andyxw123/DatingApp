@@ -18,7 +18,7 @@ import { ErrorInterceptorProvider } from './_services/error.interceptor';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './messages/messages.component';
-import { appRoutes } from './routes';
+import { appRoutes } from './_routes/appRoutes';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { AlertifyService } from './_services/alertify.service';
@@ -26,6 +26,9 @@ import { AuthGuard } from './_guards/auth.guard';
 import { UserService } from './_services/user.service';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { MemberEditResolver } from './_resolvers/member-edit.resolver';
+import { MemberEditUnsavedChangesGuard } from './_guards/member-edit-unsaved-changes.guard';
 
 export function getToken() {
    return localStorage.getItem('token');
@@ -41,33 +44,45 @@ export function getToken() {
       ListsComponent,
       MessagesComponent,
       MemberCardComponent,
-      MemberDetailComponent
+      MemberDetailComponent,
+      MemberEditComponent
    ],
    imports: [
       BrowserModule,
       HttpClientModule,
       FormsModule,
       BrowserAnimationsModule,
-      BsDropdownModule.forRoot(),
-      TabsModule.forRoot(),
       RouterModule.forRoot(appRoutes),
-      NgxGalleryModule,
       JwtModule.forRoot({
          config: {
             tokenGetter: getToken,
             whitelistedDomains: ['localhost:5000'],
             blacklistedRoutes: ['localhost:5000/api/auth']
          }
-      })
+      }),
+
+      // NgxBootstrap
+      BsDropdownModule.forRoot(),
+      TabsModule.forRoot(),
+
+      NgxGalleryModule
    ],
    providers: [
-      AuthService,
       ErrorInterceptorProvider,
+
+      // Services
+      AuthService,
       AlertifyService,
-      AuthGuard,
       UserService,
+
+      // Resolvers
       MemberDetailResolver,
-      MemberListResolver
+      MemberListResolver,
+      MemberEditResolver,
+
+      // Guards
+      AuthGuard,
+      MemberEditUnsavedChangesGuard
    ],
    bootstrap: [
       AppComponent

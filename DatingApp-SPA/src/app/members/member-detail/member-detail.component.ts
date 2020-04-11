@@ -16,8 +16,8 @@ export class MemberDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
-      this.user = data['user'];  // Must match the resolver field name in routes.ts
+    this.route.data.subscribe(r => {
+      this.user = r.data;  // Must match the resolver field name in routes.ts
       this.galleryImages = this.getImages();
     });
 
@@ -30,8 +30,6 @@ export class MemberDetailComponent implements OnInit {
         preview: false
       }
     ];
-
-
   }
 
   getImages() {
