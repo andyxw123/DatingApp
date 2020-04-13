@@ -1,0 +1,17 @@
+.img-wrapper {
+    position: relative;
+}
+
+.img-ismain-tick {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+input[type=file] {
+    color: transparent;
+}
