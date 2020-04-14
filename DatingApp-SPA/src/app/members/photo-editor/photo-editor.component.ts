@@ -58,6 +58,9 @@ export class PhotoEditorComponent implements OnInit {
       if (response) {
         const photo: Photo = JSON.parse(response);
         this.photos.push(photo);
+        if (this.photos.length === 1) {
+          this.setMainPhotoCallback(photo);
+        }
       }
     };
   }
@@ -67,21 +70,26 @@ export class PhotoEditorComponent implements OnInit {
 
     this.userService.setMainPhoto(userId, photo.id).subscribe(
       () => {
-        this.currentMain = this.photos.filter((p) => p.isMain)[0];
-        this.currentMain.isMain = false;
-        photo.isMain = true;
-        this.mainChanged.emit(photo.url);
-        this.authService.changeMemberPhoto(photo.url);
-        this.authService.currentUser.photoUrl = photo.url;
-        localStorage.setItem(
-          'user',
-          JSON.stringify(this.authService.currentUser)
-        );
+        this.setMainPhotoCallback(photo);
       },
       (error) => {
         this.alertify.error(error);
       }
     );
+  }
+
+  setMainPhotoCallback(photo: Photo) {
+    this.currentMain = this.photos.filter((p) => p.isMain)[0];
+
+    if (this.currentMain) {
+        this.currentMain.isMain = false;
+    }
+
+    photo.isMain = true;
+    this.mainChanged.emit(photo.url);
+    this.authService.changeMemberPhoto(photo.url);
+    this.authService.currentUser.photoUrl = photo.url;
+    localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
   }
 
   deletePhoto(photo: Photo) {

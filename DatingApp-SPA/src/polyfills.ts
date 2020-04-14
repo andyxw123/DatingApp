@@ -28,6 +28,29 @@ import 'classlist.js';  // Run `npm install --save classlist.js`.
  */
 import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
+import 'mdn-polyfills/Object.assign';
+import 'mdn-polyfills/Object.create';
+import 'mdn-polyfills/Object.entries';
+import 'mdn-polyfills/Array.from';
+import 'mdn-polyfills/Array.of';
+import 'mdn-polyfills/Array.prototype.find';
+import 'mdn-polyfills/Array.prototype.forEach';
+import 'mdn-polyfills/Array.prototype.filter';
+import 'mdn-polyfills/Array.prototype.findIndex';
+import 'mdn-polyfills/Array.prototype.includes';
+import 'mdn-polyfills/String.prototype.includes';
+import 'mdn-polyfills/String.prototype.repeat';
+import 'mdn-polyfills/String.prototype.startsWith';
+import 'mdn-polyfills/String.prototype.endsWith';
+import 'mdn-polyfills/String.prototype.padStart';
+import 'mdn-polyfills/String.prototype.padEnd';
+import 'mdn-polyfills/Function.prototype.bind';
+import 'mdn-polyfills/NodeList.prototype.forEach';
+import 'mdn-polyfills/Element.prototype.closest';
+import 'mdn-polyfills/Element.prototype.matches';
+import 'mdn-polyfills/MouseEvent';
+import 'mdn-polyfills/CustomEvent';
+
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents
  * user can disable parts of macroTask/DomEvents patch by setting following flags
