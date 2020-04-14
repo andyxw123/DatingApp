@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule} from '@kolkov/ngx-gallery';  // Ngx-gallery isn't compatible with Angalar 8 - the @kolkov fork fixes this
 import { FileUploadModule } from 'ng2-file-upload';
+import { TimeagoModule } from 'ngx-timeago';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -49,7 +50,7 @@ export function getToken() {
       MemberCardComponent,
       MemberDetailComponent,
       MemberEditComponent,
-      PhotoEditorComponent
+      PhotoEditorComponent,
    ],
    imports: [
       BrowserModule,
@@ -73,7 +74,8 @@ export function getToken() {
 
       // Other modules
       NgxGalleryModule,
-      FileUploadModule
+      FileUploadModule,
+      TimeagoModule.forRoot()
    ],
    providers: [
       ErrorInterceptorProvider,

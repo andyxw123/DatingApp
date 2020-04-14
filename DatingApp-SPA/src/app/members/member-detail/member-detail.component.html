@@ -17,11 +17,11 @@
           </div>
           <div>
             <strong>Last Active</strong>
-            <p>{{user.lastActive}}</p>
+            <p>{{user.lastActive | timeago }}</p>
           </div>
           <div>
             <strong>Member Since</strong>
-            <p>{{user.created}}</p>
+            <p>{{user.created | date: 'mediumDate'}}</p>
           </div>
         </div>
         <div class="card-footer">
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> | timeAgo
     <div class="col-md-8 col-sm-7 col-xs-12">
       <div class="tab-panel">
         <tabset class="member-tabset">

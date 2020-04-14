@@ -43,10 +43,11 @@ namespace DatingApp.API
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // Use Newtonsoft (package: Microsoft.AspNetCore.Mvc.NewtonsoftJson) rather than System.Text.Json
-            services.AddControllers().AddNewtonsoftJson(option => {
+            services.AddControllers().AddNewtonsoftJson(option =>
+            {
                 option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            
+
             //Data Repositories
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
@@ -64,6 +65,8 @@ namespace DatingApp.API
 
                     };
                 });
+
+            services.AddScoped<LogUserActivity>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,8 +80,10 @@ namespace DatingApp.API
             else
             {
                 //User friendly exception message formatting
-                app.UseExceptionHandler(builder => {
-                    builder.Run(async httpContext => {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async httpContext =>
+                    {
                         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                         var error = httpContext.Features.Get<IExceptionHandlerFeature>();
