@@ -10,6 +10,7 @@ import { MemberListResolver } from '../_resolvers/member-list.resolver';
 import { MemberEditComponent } from '../members/member-edit/member-edit.component';
 import { MemberEditResolver } from '../_resolvers/member-edit.resolver';
 import { MemberEditUnsavedChangesGuard } from '../_guards/member-edit-unsaved-changes.guard';
+import { ListsResolver } from '../_resolvers/lists.resolver';
 
 // appRoutes is imported by app.module.ts and passed to the RouterModule
 
@@ -23,7 +24,7 @@ export const appRoutes: Routes = [
         path: 'members',
         component: MemberListComponent,
         resolve: { data: MemberListResolver },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
       {
         path: 'members/:id',
@@ -36,8 +37,12 @@ export const appRoutes: Routes = [
         resolve: { data: MemberEditResolver },
         canDeactivate: [MemberEditUnsavedChangesGuard],
       },
+      {
+        path: 'lists',
+        component: ListsComponent,
+        resolve: { data: ListsResolver },
+      },
       { path: 'messages', component: MessagesComponent },
-      { path: 'lists', component: ListsComponent },
     ],
   },
   { path: '**', redirectTo: '', pathMatch: 'full' },

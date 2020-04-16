@@ -36,6 +36,7 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { MemberEditUnsavedChangesGuard } from './_guards/member-edit-unsaved-changes.guard';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { ListsResolver } from './_resolvers/lists.resolver';
 
 export function getToken() {
    return localStorage.getItem('token');
@@ -94,6 +95,7 @@ export function getToken() {
       MemberDetailResolver,
       MemberListResolver,
       MemberEditResolver,
+      ListsResolver,
 
       // Guards
       AuthGuard,
