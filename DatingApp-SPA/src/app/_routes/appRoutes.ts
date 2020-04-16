@@ -23,6 +23,7 @@ export const appRoutes: Routes = [
         path: 'members',
         component: MemberListComponent,
         resolve: { data: MemberListResolver },
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
       },
       {
         path: 'members/:id',

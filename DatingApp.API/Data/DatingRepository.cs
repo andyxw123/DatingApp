@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DatingApp.API.Helpers;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,19 +33,54 @@ namespace DatingApp.API.Data
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-           var users = await _context.Users.Include(u => u.Photos).ToListAsync();
+            var users = _context.Users.Include(u => u.Photos).AsQueryable();
 
-           return users;
+            if (userParams.UserId.HasValue)
+            {
+                users = users.Where(x => x.Id != userParams.UserId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(userParams.Gender))
+            {
+                users = users.Where(x => x.Gender == userParams.Gender);
+            }
+
+            if (userParams.MinAge.HasValue)
+            {
+                var maxDob = DateTime.Today.AddYears(-userParams.MinAge.Value - 1);
+                users = users.Where(x => x.DateOfBirth <= maxDob);
+            }
+
+            if (userParams.MaxAge.HasValue)
+            {
+                var minDob = DateTime.Today.AddYears(-userParams.MaxAge.Value);
+                users = users.Where(x => x.DateOfBirth >= minDob);
+            }
+
+            switch (userParams.OrderBy)
+            {
+                case "created":
+                    users = users.OrderByDescending(x => x.Created);
+                    break;
+                case "lastActive":
+                default:
+                    users = users.OrderByDescending(x => x.LastActive);
+                    break;
+            }
+
+            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
 
-        public async Task<Photo> GetPhoto(int id) {
+        public async Task<Photo> GetPhoto(int id)
+        {
             var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
 
             return photo;
         }
-        public async Task<Photo> GetMainPhotoForUser(int userId) {
+        public async Task<Photo> GetMainPhotoForUser(int userId)
+        {
             var photo = await _context.Photos.FirstOrDefaultAsync(p => p.UserId == userId && p.IsMain);
 
             return photo;

@@ -90,7 +90,7 @@ namespace DatingApp.API
 
                         if (error != null)
                         {
-                            httpContext.Response.AddApplicationError(error.Error.Message);
+                            httpContext.Response.AddApplicationErrorHeader(error.Error.Message);
 
                             await httpContext.Response.WriteAsync(error.Error.Message);
                         }
