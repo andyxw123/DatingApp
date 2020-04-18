@@ -26,30 +26,30 @@
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex">
-            <button class="btn btn-primary w-100">Like</button>
-            <button class="btn btn-success w-100">Message</button>
+            <button class="btn btn-primary w-100" (click)="sendLike()">Like</button>
+            <button class="btn btn-success w-100" (click)="selectMessagesTab()">Message</button>
           </div>
         </div>
       </div>
     </div>
     <div class="col-md-8 col-sm-7 col-xs-12">
       <div class="tab-panel">
-        <tabset class="member-tabset">
-          <tab heading="About {{user.knownAs}}">
+        <tabset class="member-tabset" #memberTabs>
+          <tab index=0 heading="About {{user.knownAs}}">
             <h4>Description</h4>
             <p>{{user.introduction}}</p>
             <h4>Looking For</h4>
             <p>{{user.lookingFor}}</p>
           </tab>
-          <tab heading="Interests">
+          <tab index=1 heading="Interests">
             <h4>Interests</h4>
             <p>{{user.interests}}</p>
           </tab>
-          <tab heading="Photos">
+          <tab index=2 heading="Photos">
             <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
           </tab>
-          <tab heading="Messages">
-            <p>Messages coming soon...</p>
+          <tab index=3 heading="Messages">
+            <app-member-messages [recipientId]="user.id"></app-member-messages>
           </tab>
         </tabset>
       </div>

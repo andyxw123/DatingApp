@@ -45,15 +45,15 @@ namespace DatingApp.API.Data
             if (!string.IsNullOrWhiteSpace(userParams.Gender))
             {
                 users = users.Where(x => x.Gender == userParams.Gender);
-            } 
+            }
 
-            if (userParams.UserId.HasValue && userParams.Likers) 
+            if (userParams.UserId.HasValue && userParams.Likers)
             {
                 var likerIds = await this.GetUserLikes(userParams.UserId.Value, true);
                 users = users.Where(x => likerIds.Contains(x.Id));
             }
 
-            if (userParams.Likees) 
+            if (userParams.Likees)
             {
                 var likeeIds = await this.GetUserLikes(userParams.UserId.Value, false);
                 users = users.Where(x => likeeIds.Contains(x.Id));
@@ -116,6 +116,68 @@ namespace DatingApp.API.Data
         public async Task<Like> GetLike(int userId, int recipientId)
         {
             return await _context.Likes.FirstOrDefaultAsync(x => x.LikerId == userId && x.LikeeId == recipientId);
+        }
+
+        public async Task<Message> GetMessage(int id)
+        {
+            return await _context.Messages.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
+        {
+            var userId = messageParams.UserId;
+
+            IQueryable<Message> messages = _context.Messages
+                .Include(x => x.Sender).ThenInclude(x => x.Photos)
+                .Include(x => x.Recipient).ThenInclude(x => x.Photos)
+                .AsQueryable();
+
+            switch (messageParams.MessageContainer)
+            {
+                case "Inbox":
+                    messages = messages.Where(x => x.RecipientId == userId && !x.RecipientDeleted);
+                    break;
+                case "Outbox":
+                    messages = messages.Where(x => x.SenderId == userId && !x.SenderDeleted);
+                    break;
+                case "Unread":
+                default:
+                    messages = messages.Where(x => x.RecipientId == userId && !x.RecipientDeleted && !x.DateRead.HasValue);
+                    break;
+            }
+
+            messages = messages.OrderByDescending(x => x.MessageSent);
+
+            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+        }
+
+        public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId, bool markAsRead = false)
+        {
+            var messages = await _context.Messages
+                .Include(x => x.Sender).ThenInclude(x => x.Photos)
+                .Include(x => x.Recipient).ThenInclude(x => x.Photos)
+                .Where(x => (x.RecipientId == userId && x.SenderId == recipientId && !x.RecipientDeleted)
+                || (x.RecipientId == recipientId && x.SenderId == userId && !x.SenderDeleted))
+                .OrderByDescending(x => x.MessageSent).ToListAsync();
+
+            if (!markAsRead)
+            {
+                return messages;
+            }
+
+            var unreadMessages = messages.Where(x => x.RecipientId == userId && !x.DateRead.HasValue);
+
+            if (unreadMessages.Any())
+            {
+                foreach (var message in unreadMessages)
+                {
+                    message.DateRead = DateTime.Now;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return messages;
         }
     }
 }

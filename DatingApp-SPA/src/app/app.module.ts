@@ -30,6 +30,7 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { AlertifyService } from './_services/alertify.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { UserService } from './_services/user.service';
+import { UserUtilityService } from './_services/user.utility.service';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
@@ -37,6 +38,8 @@ import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { MemberEditUnsavedChangesGuard } from './_guards/member-edit-unsaved-changes.guard';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { ListsResolver } from './_resolvers/lists.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 export function getToken() {
    return localStorage.getItem('token');
@@ -55,6 +58,7 @@ export function getToken() {
       MemberDetailComponent,
       MemberEditComponent,
       PhotoEditorComponent,
+      MemberMessagesComponent
    ],
    imports: [
       BrowserModule,
@@ -90,12 +94,14 @@ export function getToken() {
       AuthService,
       AlertifyService,
       UserService,
+      UserUtilityService,
 
       // Resolvers
       MemberDetailResolver,
       MemberListResolver,
       MemberEditResolver,
       ListsResolver,
+      MessagesResolver,
 
       // Guards
       AuthGuard,

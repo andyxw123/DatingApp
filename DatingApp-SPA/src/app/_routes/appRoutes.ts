@@ -11,6 +11,7 @@ import { MemberEditComponent } from '../members/member-edit/member-edit.componen
 import { MemberEditResolver } from '../_resolvers/member-edit.resolver';
 import { MemberEditUnsavedChangesGuard } from '../_guards/member-edit-unsaved-changes.guard';
 import { ListsResolver } from '../_resolvers/lists.resolver';
+import { MessagesResolver } from '../_resolvers/messages.resolver';
 
 // appRoutes is imported by app.module.ts and passed to the RouterModule
 
@@ -42,7 +43,11 @@ export const appRoutes: Routes = [
         component: ListsComponent,
         resolve: { data: ListsResolver },
       },
-      { path: 'messages', component: MessagesComponent },
+      { 
+        path: 'messages',
+        component: MessagesComponent,
+        resolve: { data: MessagesResolver },
+      },
     ],
   },
   { path: '**', redirectTo: '', pathMatch: 'full' },
