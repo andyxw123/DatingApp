@@ -28,14 +28,14 @@ namespace DatingApp.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
             return user;
         }
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = _context.Users.Include(u => u.Photos).AsQueryable();
+            var users = _context.Users.AsQueryable();
 
             if (userParams.UserId.HasValue)
             {
@@ -127,10 +127,7 @@ namespace DatingApp.API.Data
         {
             var userId = messageParams.UserId;
 
-            IQueryable<Message> messages = _context.Messages
-                .Include(x => x.Sender).ThenInclude(x => x.Photos)
-                .Include(x => x.Recipient).ThenInclude(x => x.Photos)
-                .AsQueryable();
+            IQueryable<Message> messages = _context.Messages.AsQueryable();
 
             switch (messageParams.MessageContainer)
             {
@@ -154,8 +151,6 @@ namespace DatingApp.API.Data
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId, bool markAsRead = false)
         {
             var messages = await _context.Messages
-                .Include(x => x.Sender).ThenInclude(x => x.Photos)
-                .Include(x => x.Recipient).ThenInclude(x => x.Photos)
                 .Where(x => (x.RecipientId == userId && x.SenderId == recipientId && !x.RecipientDeleted)
                 || (x.RecipientId == recipientId && x.SenderId == userId && !x.SenderDeleted))
                 .OrderByDescending(x => x.MessageSent).ToListAsync();

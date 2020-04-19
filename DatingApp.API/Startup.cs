@@ -32,7 +32,35 @@ namespace DatingApp.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        //These Configure...Services method are convention based - the relevant one will be used dependent on the environment mode
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            // // "DefaultConnection": "Data Source=datingapp.db"
+            // services.AddDbContext<DataContext>(x =>
+            // {
+            //     x.UseLazyLoadingProxies();
+            //     x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+            // });
+
+            services.AddDbContext<DataContext>(x =>
+            {
+                x.UseLazyLoadingProxies(); //Microsoft.EntityFrameworkCore.Proxies.dll
+                x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x =>
+            {
+                x.UseLazyLoadingProxies();
+                x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
@@ -40,7 +68,6 @@ namespace DatingApp.API
             services.AddCors();
 
             services.AddAutoMapper(this.GetType().Assembly);
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // Use Newtonsoft (package: Microsoft.AspNetCore.Mvc.NewtonsoftJson) rather than System.Text.Json
             services.AddControllers().AddNewtonsoftJson(option =>
@@ -108,9 +135,15 @@ namespace DatingApp.API
 
             app.UseAuthorization();
 
+            // Start: Serve static files from wwwroot folder via the Kestral Server
+            app.UseDefaultFiles();      //Looks for the index.html file in /wwwroot
+            app.UseStaticFiles();
+            // End
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Spa");  //Falls back to using the SpaController to serve up the Angular routes
             });
         }
     }
