@@ -14,6 +14,9 @@ namespace DatingApp.API
         {
             var host = CreateHostBuilder(args).Build();
 
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var isDevelopment = environment == Environments.Development;
+
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -24,7 +27,10 @@ namespace DatingApp.API
 
                     context.Database.Migrate();
 
-                    Seed.SeedUsers(context);
+                    if (isDevelopment)
+                    {
+                        Seed.SeedUsers(context);
+                    }
                 }
                 catch (Exception ex)
                 {
